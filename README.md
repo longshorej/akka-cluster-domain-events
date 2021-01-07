@@ -26,9 +26,14 @@ curl http://192.168.1.23:8558/cluster/membership-events
 You should see something like the following:
 
 ```
-data:MemberUp(Member(akka://default@127.0.0.1:2551, Up))
+data:{"member":{"dataCenter":"default","roles":["dc-default"],"status":"Up","uniqueAddress":{"address":"akka://default@127.0.0.1:2551","longUid":2489134320706880032}},"type":"MemberUp"}
+event:MemberUp
 
-data:
+data:{"address":"akka://default@127.0.0.1:2551","type":"LeaderChanged"}
+event:LeaderChanged
+
+data:{"address":"akka://default@127.0.0.1:2551","role":"dc-default","type":"LeaderChanged"}
+event:LeaderChanged
 ```
 
 Next, start node two in yet another terminal:
@@ -40,17 +45,47 @@ java -Dakka.management.http.port=8559 -Dakka.remote.artery.canonical.port=2552 -
 The cURL terminal should now show something similar to:
 
 ```bash
-data:MemberJoined(Member(akka://default@127.0.0.1:2552, Joining))
+data:{"member":{"dataCenter":"default","roles":["dc-default"],"status":"Joining","uniqueAddress":{"address":"akka://default@127.0.0.1:2552","longUid":4278877901175315812}},"type":"MemberJoined"}
+event:MemberJoined
 
-data:MemberUp(Member(akka://default@127.0.0.1:2552, Up))
+data:{"member":{"dataCenter":"default","roles":["dc-default"],"status":"Up","uniqueAddress":{"address":"akka://default@127.0.0.1:2552","longUid":4278877901175315812}},"type":"MemberUp"}
+event:MemberUp
+
 ```
 
-Finally, hit CTRL-C in node two's terminal and observe from cURL:
+Next, hit CTRL-C in node two's terminal and observe from cURL:
 
 ```bash
-data:MemberLeft(Member(akka://default@127.0.0.1:2552, Leaving))
+data:{"member":{"dataCenter":"default","roles":["dc-default"],"status":"Leaving","uniqueAddress":{"address":"akka://default@127.0.0.1:2552","longUid":4278877901175315812}},"type":"MemberLeft"}
+event:MemberLeft
 
-data:MemberExited(Member(akka://default@127.0.0.1:2552, Exiting))
+data:{"member":{"dataCenter":"default","roles":["dc-default"],"status":"Exiting","uniqueAddress":{"address":"akka://default@127.0.0.1:2552","longUid":4278877901175315812}},"type":"MemberExited"}
+event:MemberExited
 
-data:MemberRemoved(Member(akka://default@127.0.0.1:2552, Removed),Exiting)
+data:{"member":{"dataCenter":"default","roles":["dc-default"],"status":"Removed","uniqueAddress":{"address":"akka://default@127.0.0.1:2552","longUid":4278877901175315812}},"previousStatus":"Exiting","type":"MemberRemoved"}
+event:MemberRemoved
+```
+
+Lastly, hit CTRL-C in node one's terminal and observe from cURL:
+
+```bash
+data:{"member":{"dataCenter":"default","roles":["dc-default"],"status":"Leaving","uniqueAddress":{"address":"akka://default@127.0.0.1:2551","longUid":2489134320706880032}},"type":"MemberLeft"}
+event:MemberLeft
+
+data:{"member":{"dataCenter":"default","roles":["dc-default"],"status":"Exiting","uniqueAddress":{"address":"akka://default@127.0.0.1:2551","longUid":2489134320706880032}},"type":"MemberExited"}
+event:MemberExited
+
+data:{"type":"ClusterShuttingDown"}
+event:ClusterShuttingDown
+
+data:{"member":{"dataCenter":"default","roles":["dc-default"],"status":"Removed","uniqueAddress":{"address":"akka://default@127.0.0.1:2551","longUid":2489134320706880032}},"previousStatus":"Exiting","type":"MemberRemoved"}
+event:MemberRemoved
+
+data:{"type":"LeaderChanged"}
+event:LeaderChanged
+
+data:{"role":"dc-default","type":"LeaderChanged"}
+event:LeaderChanged
+
+curl: (56) Recv failure: Connection reset by peer
 ```
