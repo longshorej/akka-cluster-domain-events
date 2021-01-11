@@ -1,8 +1,8 @@
-name := "akka-cluster-membership-events"
+name := "akka-cluster-domain-events"
 
 val AkkaHttpVersion = "10.2.2"
 val AkkaVersion = "2.6.10"
-val AkkaManagementVersion = "1.0.8+69-0fade738+20210107-1609"
+val AkkaManagementVersion = "1.0.8+70-11dadeb4+20210111-1444"
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka"             %% "akka-actor"                   % AkkaVersion,
@@ -23,4 +23,3 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka"             %% "akka-persistence"             % AkkaVersion,
   "com.typesafe.akka"             %% "akka-protobuf"                % AkkaVersion
 )
-
